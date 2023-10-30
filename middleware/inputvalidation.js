@@ -19,6 +19,16 @@ export const userSignupInputValidation = [
     .not()
     .isEmpty()
     .withMessage("OTP is required")
-    .isLength({ min: 6, max: 6 })
-    .withMessage("OTP must be 6 digits"),
+    .isLength({ min: 4, max: 4 })
+    .withMessage("OTP must be 4 digits"),
+];
+
+export const userLoginInputValidation = [
+  body("phoneNumber").not().isEmpty().withMessage("Phone Number is required"),
+  body("otp")
+    .not()
+    .isEmpty()
+    .withMessage("OTP is required")
+    .isLength({ min: 4, max: 4 })
+    .withMessage("OTP must be 4 digits"),
 ];

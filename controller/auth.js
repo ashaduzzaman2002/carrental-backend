@@ -135,7 +135,7 @@ export const userSignup = async (req, res) => {
 
 // Login
 export const userLogin = async (req, res) => {
-  const { email, password } = req.body;
+  const { otp, phoneNumber } = req.body;
 
   const err = validationResult(req);
   if (!err.isEmpty()) {
@@ -145,27 +145,26 @@ export const userLogin = async (req, res) => {
   }
 
   try {
-    let user = await Restaurant.findOne({ email });
+    let user = await User.findOne({ phoneNumber });
 
     if (!user)
       return res.status(404).json({ error: true, message: "User not exist" });
 
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordMatched)
+    const isOTPExist = await OTP.findOne({ phoneNumber });
+    if (!isOTPExist)
       return res
-        .status(401)
-        .json({ error: true, message: "Invalid credentials" });
+        .status(400)
+        .json({ error: true, message: "OTP does not exists" });
+
+    const isOTPMatched = bcrypt.compareSync(otp, isOTPExist.value);
+    if (!isOTPMatched)
+      return res.status(400).json({ error: true, message: "Invalid OTP" });
 
     res.clearCookie("token");
 
-    const token = jwt.sign(
-      { id: user._id, role: "RESTAURENT" },
-      process.env.JWT_SECRECT,
-      {
-        expiresIn: "30d",
-      }
-    );
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRECT, {
+      expiresIn: "30d",
+    });
 
     res.cookie("token", token, {
       path: "/",
@@ -173,8 +172,6 @@ export const userLogin = async (req, res) => {
       httpOnly: true,
       sameSite: "lax",
     });
-
-    user.password = undefined;
 
     res
       .status(200)
