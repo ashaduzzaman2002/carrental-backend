@@ -2,7 +2,7 @@ import mongoose from mongoose;
 
 const Schema = mongoose.Schema;
 
-const carSchema = Schema({
+const carSchema = new Schema({
   carName: {
     type: String,
     required: true,
@@ -37,12 +37,12 @@ const carSchema = Schema({
   },
   carPhotos:
   {
-     type: [Buffer],
+     type: [String],
      required:true
   },
   carInteriorPhotos:
   {
-    type:[Buffer],
+    type:[String],
     required:true,
   }
   // Other car-related fields
