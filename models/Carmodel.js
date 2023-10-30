@@ -3,11 +3,11 @@ import mongoose from mongoose;
 const Schema = mongoose.Schema;
 
 const carSchema = Schema({
-  make: {
+  carName: {
     type: String,
     required: true,
   },
-  model: {
+  modelNo: {
     type: String,
     required: true,
   },
@@ -23,6 +23,28 @@ const carSchema = Schema({
     type: String,
     required: true,
   },
+  geartype:{
+    type:String,
+    required:true
+  },
+  ac:{
+     type:Boolean,
+     required:true
+  },
+  price:{
+    type:Number,
+    required:true
+  },
+  carPhotos:
+  {
+     type: [Buffer],
+     required:true
+  },
+  carInteriorPhotos:
+  {
+    type:[Buffer],
+    required:true,
+  }
   // Other car-related fields
 });
 
