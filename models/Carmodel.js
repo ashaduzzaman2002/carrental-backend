@@ -32,8 +32,15 @@ const carSchema = new Schema({
     required: true,
   },
   price: {
-    type: Number,
-    required: true,
+    amount: {
+      type: Number,
+      required: true,
+    },
+    amountType: {
+      type: String,
+      enum: ["day", "week", "month"],
+      required: true,
+    },
   },
   carPhotos: [
     {
@@ -47,7 +54,7 @@ const carSchema = new Schema({
       required: true,
     },
   ],
-  user: {
+  UserId: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
