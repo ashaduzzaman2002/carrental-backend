@@ -42,20 +42,10 @@ const carSchema = new Schema({
       required: true,
     },
   },
-  carPhotos: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-  carInteriorPhotos: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
+  carPhotos: [],
+  carInteriorPhotos: [],
   UserId: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "User",
     required: true,
   },
