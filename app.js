@@ -4,8 +4,8 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
-// Import routers 
-import authRouter from './routes/auth.js'
+// Import routers
+import authRouter from "./routes/auth.js";
 
 dotenv.config();
 const port = process.env.PORT || 5000;
@@ -17,7 +17,7 @@ import connectDB from "./config/db.js";
 /**middlewares */
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", ""],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -32,9 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 /** Disable the X-Powered-By header*/
 app.disable("x-powered-by");
 
-
 // use routers
-app.use('/auth', authRouter)
+app.use("/auth", authRouter);
 
 /** Http get request */
 app.get("/", (req, res) => {
