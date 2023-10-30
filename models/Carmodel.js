@@ -1,4 +1,4 @@
-import mongoose from mongoose;
+import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
@@ -23,29 +23,36 @@ const carSchema = new Schema({
     type: String,
     required: true,
   },
-  geartype:{
-    type:String,
-    required:true
+  geartype: {
+    type: String,
+    required: true,
   },
-  ac:{
-     type:Boolean,
-     required:true
+  ac: {
+    type: Boolean,
+    required: true,
   },
-  price:{
-    type:Number,
-    required:true
+  price: {
+    type: Number,
+    required: true,
   },
-  carPhotos:
-  {
-     type: [String],
-     required:true
+  carPhotos: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  carInteriorPhotos: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
   },
-  carInteriorPhotos:
-  {
-    type:[String],
-    required:true,
-  }
   // Other car-related fields
 });
 
- export default mongoose.model("Car",carSchema);
+export default mongoose.model("Car", carSchema);
