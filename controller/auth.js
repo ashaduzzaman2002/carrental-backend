@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import OTP from "../models/OTP.js";
 import bcrypt from "bcrypt";
 import { generateOTP } from "../utils/helper.js";
+import { validationResult } from "express-validator";
 
 export const getUser = async (req, res) => {
   res.json("okay");
@@ -10,7 +11,42 @@ export const getUser = async (req, res) => {
 export const userSignup = async (req, res) => {
   const { firstname, lastname, email, phoneNumber, otp } = req.body;
 
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    return res
+      .status(400)
+      .json({ success: false, message: err.array()[0].msg });
+  }
+
   try {
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phoneNumber }],
+    });
+
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ error: true, message: "User already exists" });
+    }
+
+    const isOTPExist = await OTP.findOne({ phoneNumber });
+    if (!isOTPExist)
+      return res
+        .status(400)
+        .json({ error: true, message: "OTP does not exists" });
+
+    const isOTPMatched = bcrypt.compareSync(otp, isOTPExist.value);
+    if (!isOTPMatched)
+      return res.status(400).json({ error: true, message: "Invalid OTP" });
+
+    const newUser = new User({ firstname, lastname, phoneNumber, email });
+    await newUser.save();
+
+    res.json({
+      error: false,
+      message: "User created successfully",
+      user: newUser,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: true, message: "Internal Server Error" });
@@ -20,6 +56,14 @@ export const userSignup = async (req, res) => {
 // send otp
 export const sendOtp = async (req, res) => {
   const { phoneNumber, type } = req.body;
+
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    return res
+      .status(400)
+      .json({ success: false, message: err.array()[0].msg });
+  }
+
   try {
     const user = await User.findOne({ phoneNumber });
 
