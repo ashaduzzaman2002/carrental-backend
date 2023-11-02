@@ -1,9 +1,14 @@
-import User from "../models/User.js";
-import OTP from "../models/OTP.js";
 import bcrypt from "bcrypt";
-import { generateOTP } from "../utils/helper.js";
 import { validationResult } from "express-validator";
 import jwt from "jsonwebtoken";
+import twilio from "twilio";
+import OTP from "../models/OTP.js";
+import User from "../models/User.js";
+import { generateOTP } from "../utils/helper.js";
+
+const accountSid = "AC79e078f9ca186159b5c1a3e848c00bac";
+const authToken = "39ffc61441705002e8cf66fddd1b1f07";
+const client = twilio(accountSid, authToken);
 
 // get user
 export const getUser = async (req, res) => {
@@ -107,6 +112,14 @@ export const userSignup = async (req, res) => {
       return res.status(400).json({ error: true, message: "Invalid OTP" });
 
     const newUser = new User({ firstname, lastname, phoneNumber, email });
+    await client.messages
+      .create({
+        body: `your otp verification code for ${firstname} is ${otp}`,
+        from: "+13342597676",
+        to: `${phonenumber}`,
+      })
+      .then((message) => res.Status(2000).json({ msg: `${message.sid}` }))
+      .done();
     await newUser.save();
 
     res.clearCookie("token");
